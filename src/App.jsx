@@ -1,34 +1,65 @@
 
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-
-function Home() {
-  return <h2>Welcome to Home Page</h2>;
-}
-
-function About() {
-  return <h2>This is About Page</h2>;
-}
-
-function Contact() {
-  return <h2>Contact Us: contact@example.com</h2>;
-}
+import { useState } from "react";
 
 export default function App() {
+  const [products, setProducts] = useState([]);
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+
+  function addProduct(event) {
+    event.preventDefault();
+
+    const newProduct = {
+      id: Date.now(),
+      name: name,
+      price: Number(price)
+    };
+
+    setProducts([...products, newProduct]);
+    setName("");
+    setPrice("");
+  }
+
   return (
-    <BrowserRouter>
-      <h1>React Router Navigation</h1>
+    <div>
+      <h1>Product Management</h1>
 
-      <nav>
-        <Link to="/">Home</Link>{" | "}
-        <Link to="/about">About</Link>{" | "}
-        <Link to="/contact">Contact</Link>
-      </nav>
+      <form onSubmit={addProduct}>
+        <input
+          type="text"
+          placeholder="Enter Product Name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          required
+        />
+        <br /><br />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-      </Routes>
-    </BrowserRouter>
+        <input
+          type="number"
+          placeholder="Enter Product Price"
+          value={price}
+          onChange={(event) => setPrice(event.target.value)}
+          min="0"
+          required
+        />
+        <br /><br />
+
+        <button type="submit">Add Product</button>
+      </form>
+
+      <h2>Product List</h2>
+
+      {products.length === 0 ? (
+        <p>No products available.</p>
+      ) : (
+        products.map((product) => (
+          <div key={product.id}>
+            <p>
+              Product: {product.name} | Price: Rs. {product.price}
+            </p>
+          </div>
+        ))
+      )}
+    </div>
   );
 }
